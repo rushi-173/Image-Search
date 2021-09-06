@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+	font-family: "Open Sans", sans-serif;
+}
+ul {
+	list-style: none;
+}
+a,
+a:hover {
+	outline: none;
+	text-decoration: none;
+}
+button:focus {
+	outline: none;
+}
+input {
+	outline: none;
+}
+li {
+	list-style-type: none;
+}
+
+.container {
+	display: flex;
+	flex-wrap: wrap;
+}
+.container.sb {
+	justify-content: space-between;
+}
+
+.app {
+	text-align: center;
+}
+
+.app-header {
+	background-color: #222;
+	padding: 20px;
+	color: white;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	z-index: 2;
+	min-height: 150px;
+}
+.search-bar {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.search-input {
+	width: 100%;
+	border-radius: 2px;
+	border: none;
+	padding: 6px;
+	margin: 0;
+}
+
+.app-content {
+	position: relative;
+	margin-top: 190px;
+	padding: 30px;
+}
+
+.query {
+	font-size: 10px;
+	background: grey;
+	padding: 4px;
+	border-radius: 2px;
+	margin: 0 5px;
+}
+
+.img-modal-container {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.img-in-modal {
+	cursor: pointer;
+	-webkit-box-shadow: 0px 0px 0px 9999px rgba(0, 0, 0, 0.8);
+	box-shadow: 0px 0px 0px 9999px rgba(0, 0, 0, 0.8);
+}
+
+.image-item {
+	cursor: pointer;
+	animation: all 0.3s ease-in-out;
+	margin: 8px;
+}
