@@ -32,7 +32,7 @@ export default function App() {
 			setSearchHistory((prev) => [text, ...prev], updateLocalStorage());
 		}
 
-		const url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&nojsoncallback=1&api_key=${process.env.REACT_APP_API_KEY}&per_page=20&text=${text}`;
+		const url = `https://api.flickr.com/services/rest/?method=flickr.photos.search&Safe=1&format=json&nojsoncallback=1&api_key=${process.env.REACT_APP_API_KEY}&per_page=20&text=${text}`;
 		fetch(url)
 			.then((res) => res.json())
 			.then((resp) => {
@@ -61,10 +61,10 @@ export default function App() {
 	function handleScroll() {
 		setShowLoading(1);
 		let url = searchText
-			? `https://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&nojsoncallback=1&api_key=${
+			? `https://api.flickr.com/services/rest/?method=flickr.photos.search&Safe=1&format=json&nojsoncallback=1&api_key=${
 					process.env.REACT_APP_API_KEY
 			  }&per_page=20&text=${searchText}&per_page=20&page=${pageNumber + 1}`
-			: `https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&format=json&nojsoncallback=1&api_key=${
+			: `https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&Safe=1&format=json&nojsoncallback=1&api_key=${
 					process.env.REACT_APP_API_KEY
 			  }&per_page=20&page=${pageNumber + 1}`;
 		fetch(url)
@@ -86,7 +86,7 @@ export default function App() {
 		}, 100);
 		setShowLoading(2);
 		fetch(
-			`https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&format=json&nojsoncallback=1&api_key=${process.env.REACT_APP_API_KEY}&per_page=20`
+			`https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&Safe=1&format=json&nojsoncallback=1&api_key=${process.env.REACT_APP_API_KEY}&per_page=20`
 		)
 			.then((res) => res.json())
 			.then((resp) => {
