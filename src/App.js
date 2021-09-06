@@ -25,6 +25,7 @@ export default function App() {
 		console.log(text);
 		setShowLoading(2);
 		if (searched && text.length) {
+			window.scrollTo(0, 0);
 			if (searchHistory.includes(text)) {
 				setSearchHistory((prev) => prev.filter((item) => item !== text));
 			}
