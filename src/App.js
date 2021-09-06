@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import { ImageList, ImageModal } from "./components";
 import { scrollAreaAvailable, debounce, throttle } from "./utils.js";
+import Loader from "react-loader-spinner";
 
 export default function App() {
 	const searchHistoryFromStorage = JSON.parse(
@@ -10,20 +11,20 @@ export default function App() {
 	);
 	const [searchText, setSearchText] = useState("");
 	const [imgList, setImgList] = useState([]);
-	const [pageNumber, setPageNumber] = useState(1);
+	const pageNumber = useRef(1);
 	const [ImageInModal, setImageInModal] = useState(null);
 	const [searchHistory, setSearchHistory] = useState(
 		searchHistoryFromStorage ? searchHistoryFromStorage : []
 	);
 	const [showSuggestions, setShowSuggestions] = useState(false);
-	const [showLoading, setShowLoading] = useState(0);
+	const showLoading = useRef(1);
 	const [filteredSearchHistory, setFilteredSearchHistory] = useState(
 		searchHistory.reverse()
 	);
 
 	const search = (text, searched = false) => {
 		console.log(text);
-		setShowLoading(2);
+		showLoading.current = 1;
 		if (searched && text.length) {
 			window.scrollTo(0, 0);
 			if (searchHistory.includes(text)) {
@@ -41,7 +42,7 @@ export default function App() {
 			.catch((err) => {
 				console.log(err);
 			});
-		setShowLoading(0);
+		showLoading.current = 0;
 	};
 	const makeDebouncedSearch = debounce(search, 1000);
 
@@ -59,24 +60,28 @@ export default function App() {
 	}
 
 	function handleScroll() {
-		setShowLoading(1);
+		showLoading.current = 1;
 		let url = searchText
 			? `https://api.flickr.com/services/rest/?method=flickr.photos.search&Safe=1&format=json&nojsoncallback=1&api_key=${
 					process.env.REACT_APP_API_KEY
-			  }&per_page=20&text=${searchText}&per_page=20&page=${pageNumber + 1}`
+			  }&per_page=20&text=${searchText}&per_page=20&page=${
+					pageNumber.current + 1
+			  }`
 			: `https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&Safe=1&format=json&nojsoncallback=1&api_key=${
 					process.env.REACT_APP_API_KEY
-			  }&per_page=20&page=${pageNumber + 1}`;
+			  }&per_page=20&page=${pageNumber.current + 1}`;
+
+		console.log(url, pageNumber);
 		fetch(url)
 			.then((res) => res.json())
 			.then((resp) => {
-				setPageNumber(resp.photos.page);
+				pageNumber.current = resp.photos.page;
 				setImgList((prev) => [...prev, ...resp.photos.photo]);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
-		setShowLoading(0);
+		showLoading.current = 0;
 	}
 
 	useEffect(() => {
@@ -84,19 +89,18 @@ export default function App() {
 			if (scrollAreaAvailable()) return;
 			handleScroll();
 		}, 100);
-		setShowLoading(2);
 		fetch(
 			`https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&Safe=1&format=json&nojsoncallback=1&api_key=${process.env.REACT_APP_API_KEY}&per_page=20`
 		)
 			.then((res) => res.json())
 			.then((resp) => {
-				setPageNumber(resp.photos.page);
+				pageNumber.current = resp.photos.page;
 				setImgList((prev) => [...prev, ...resp.photos.photo]);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
-		setShowLoading(0);
+		showLoading.current = 0;
 
 		return () => {
 			window.onscroll = undefined;
@@ -190,12 +194,10 @@ export default function App() {
 				</div>
 			</div>
 			<div className="app-content">
-				{showLoading === 2 ? (
-					<h2>Loading...</h2>
-				) : imgList.length ? (
+				{imgList.length > 0 ? (
 					<ImageList images={imgList} onImageClick={handleImageClick} />
 				) : (
-					<p style={{ margin: "1rem" }}>No Search Results</p>
+					<></>
 				)}
 				<ReactCSSTransitionGroup
 					transitionName="popup-container"
@@ -207,9 +209,11 @@ export default function App() {
 					)}
 				</ReactCSSTransitionGroup>
 			</div>
-
-			{showLoading === 1 ? <h2>Loading More....</h2> : <></>}
-
+			{imgList.length === 0 && !showLoading ? (
+				<p style={{ margin: "1rem" }}>No Search Results</p>
+			) : (
+				<Loader type="ThreeDots" color="#222222" height={80} width={80} />
+			)}
 			<div style={{ height: "5rem" }}></div>
 		</div>
 	);
