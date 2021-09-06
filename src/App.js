@@ -23,7 +23,6 @@ export default function App() {
 	);
 
 	const search = (text, searched = false) => {
-		console.log(text);
 		showLoading.current = 1;
 		if (searched && text.length) {
 			window.scrollTo(0, 0);
@@ -71,7 +70,6 @@ export default function App() {
 					process.env.REACT_APP_API_KEY
 			  }&per_page=20&page=${pageNumber.current + 1}`;
 
-		console.log(url, pageNumber);
 		fetch(url)
 			.then((res) => res.json())
 			.then((resp) => {
@@ -122,7 +120,6 @@ export default function App() {
 			})
 		);
 	}, [searchHistory, searchText]);
-	console.log(searchHistory);
 
 	return (
 		<div className="app">
@@ -165,7 +162,6 @@ export default function App() {
 											borderBottom: "1px solid #aaa",
 										}}
 										onClick={(e) => {
-											console.log("hello");
 											search(query, 1);
 											setSearchText(query);
 											setShowSuggestions(false);
